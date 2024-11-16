@@ -1,10 +1,12 @@
 import express from "express";
 import questionRouter from "../routes/questionRoute";
 import { Response, Request, NextFunction } from "express-serve-static-core";
+import cors from "cors";
 
 const appConfig = () => {
   const app = express();
   app.use(express.json());
+  app.use(cors());
 
   // application routes
 
