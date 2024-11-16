@@ -3,15 +3,11 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable("answers", {
-      uuid: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-        defaultValue: Sequelize.UUIDV4,
+      id: {
         allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-        },
+        autoIncrement: true,
+        primaryKey: true,
+        type: Sequelize.INTEGER,
       },
       answer: {
         type: Sequelize.STRING,
@@ -21,11 +17,18 @@ module.exports = {
         },
       },
       questionId: {
-        type: Sequelize.UUID,
+        type: Sequelize.INTEGER,
         allowNull: false,
         references: {
           model: "questions",
-          key: "uuid",
+          key: "id",
+        },
+      },
+      category: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
         },
       },
       createdAt: {

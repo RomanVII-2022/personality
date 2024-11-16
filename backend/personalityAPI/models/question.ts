@@ -1,14 +1,14 @@
 "use strict";
 import { Model } from "sequelize";
 
-interface QuestionAttributes {
-  uuid: string;
+type QuestionAttributesType = {
+  id: number;
   question: string;
-}
+};
 
 module.exports = (sequelize: any, DataTypes: any) => {
-  class Question extends Model<QuestionAttributes> {
-    declare uuid: string;
+  class Question extends Model<QuestionAttributesType> {
+    declare id: number;
     declare question: string;
     /**
      * Helper method for defining associations.
@@ -17,19 +17,16 @@ module.exports = (sequelize: any, DataTypes: any) => {
      */
     static associate(models: any) {
       // define association here
+      this.hasMany(models.Answer, { foreignKey: "questionId", as: "answers" });
     }
   }
   Question.init(
     {
-      uuid: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
+      id: {
         allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-        },
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
       },
       question: {
         type: DataTypes.STRING,
