@@ -1,17 +1,20 @@
 "use strict";
+
 import { Model } from "sequelize";
 
-interface AnswerAttributes {
-  uuid: string;
+type AnswerAttributesType = {
+  id: number;
   answer: string;
-  questionId: string;
-}
+  questionId: number;
+  category: string;
+};
 
 module.exports = (sequelize: any, DataTypes: any) => {
-  class Answer extends Model<AnswerAttributes> {
-    declare uuid: string;
+  class Answer extends Model<AnswerAttributesType> {
+    declare id: number;
     declare answer: string;
-    declare questionId: string;
+    declare questionId: number;
+    declare category: string;
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -19,19 +22,19 @@ module.exports = (sequelize: any, DataTypes: any) => {
      */
     static associate(models: any) {
       // define association here
+      this.belongsTo(models.Question, {
+        foreignKey: "questionId",
+        as: "question",
+      });
     }
   }
   Answer.init(
     {
-      uuid: {
-        type: DataTypes.UUID,
-        primaryKey: true,
-        defaultValue: DataTypes.UUIDV4,
+      id: {
         allowNull: false,
-        unique: true,
-        validate: {
-          notEmpty: true,
-        },
+        autoIncrement: true,
+        primaryKey: true,
+        type: DataTypes.INTEGER,
       },
       answer: {
         type: DataTypes.STRING,
@@ -41,11 +44,18 @@ module.exports = (sequelize: any, DataTypes: any) => {
         },
       },
       questionId: {
-        type: DataTypes.strict,
+        type: DataTypes.INTEGER,
         allowNull: false,
         references: {
           model: "questions",
-          key: "uuid",
+          key: "id",
+        },
+      },
+      category: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
         },
       },
     },
