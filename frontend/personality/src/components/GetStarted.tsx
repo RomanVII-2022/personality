@@ -1,27 +1,33 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "./ui/button";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogFooter,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import Image from "next/image";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselNext,
-  CarouselPrevious,
-} from "./ui/carousel";
+import { Carousel, CarouselApi, CarouselContent } from "./ui/carousel";
 import Questions from "./Questions";
+import { useQuestionStore } from "@/store/questionStore";
+import { countAndDetermineCategory } from "@/utilities/finalResult";
+import Result from "./Result";
 
 function GetStarted() {
   const [api, setApi] = React.useState<CarouselApi>();
+  const storeAnswers = useQuestionStore((state) => state.answers);
+  const clearAnswers = useQuestionStore((state) => state.clearAnswers);
+  const [showResult, setShowResult] = useState(false);
+  const [category, setCategory] = useState("");
+
+  const handleSubmit = () => {
+    const category = countAndDetermineCategory(storeAnswers);
+    setCategory(category);
+    setShowResult(true);
+  };
 
   return (
     <>
@@ -30,6 +36,10 @@ function GetStarted() {
           <Button
             size="lg"
             className="bg-gradient-to-r from-orange-500 to-orange-100 group hover:from-primary hover:to-primary"
+            onClick={() => {
+              setShowResult(false);
+              clearAnswers();
+            }}
           >
             <p className="font-bold text-black">Get started</p>
           </Button>
@@ -45,17 +55,29 @@ function GetStarted() {
             <div className="absolute inset-0 flex items-center justify-center">
               <Carousel setApi={setApi} className="w-full max-w-[417px]">
                 <CarouselContent>
-                  <Questions />
+                  {showResult ? <Result category={category} /> : <Questions />}
                 </CarouselContent>
-                <CarouselPrevious />
-                <CarouselNext />
               </Carousel>
             </div>
           </div>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction>Continue</AlertDialogAction>
-            <Button onClick={() => api?.scrollNext()}>Button</Button>
+            {!showResult && (
+              <>
+                <Button onClick={() => api?.scrollPrev()}>Prev</Button>
+                {storeAnswers.length === 5 ? (
+                  <Button onClick={handleSubmit}>Submit</Button>
+                ) : (
+                  <Button
+                    onClick={() => {
+                      api?.scrollNext();
+                    }}
+                  >
+                    Next
+                  </Button>
+                )}
+              </>
+            )}
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
