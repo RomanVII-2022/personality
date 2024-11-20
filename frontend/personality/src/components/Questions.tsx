@@ -11,7 +11,6 @@ function Questions() {
     fetcher
   );
   const storeAnswers = useQuestionStore((state) => state.answers);
-  console.log(storeAnswers);
   const updateAnswers = useQuestionStore((state) => state.updateAnswers);
   return (
     <>
