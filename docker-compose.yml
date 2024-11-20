@@ -1,0 +1,39 @@
+version: "3.3"
+services:
+  db:
+    container_name: db_container
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=personality
+    volumes:
+      - ./data/db:/var/bin/postgresql/data
+    ports:
+      - 5432:5432
+  personalityapi:
+    container_name: api_container
+    build:
+      context: ./backend/personalityAPI
+      dockerfile: Dockerfile
+    command: npm run dev
+    volumes:
+      - ./backend/personalityAPI:/app/backend
+    ports:
+      - 5555:5555
+    depends_on:
+      - db
+  personality:
+    container_name: personality_container
+    build:
+      context: ./frontend/personality
+      dockerfile: Dockerfile
+    command: npm run dev
+    volumes:
+      - ./frontend/personality:/app/frontend
+    ports:
+      - 3000:3000
+    depends_on:
+      - db
+      - personalityapi
