@@ -13,7 +13,9 @@
    - Express
    - Sequelize
    - PostgreSQL
-3. Docker
+3. Testing
+   - Jest
+4. Docker
 
 > **Prerequisites:** <br/>
 >
@@ -92,7 +94,13 @@
    - ACID-compliant transactions ensure data integrity.
    - Highly scalable and reliable for handling large datasets.
 
-8. **Docker**
+8. **Jest**
+
+   - Provides a simple and intuitive API for writing tests.
+   - Offers built-in support for mocking, which simplifies testing dependencies.
+
+9. **Docker**
+
    - Portability - Runs consistently across different environments
    - Simplified Deployment - packages the application and its dependencies into a single image.
    - Resource Isolation - ensures isolated environments for different services, preventing conflicts.

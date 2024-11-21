@@ -3,6 +3,7 @@ import db from "../models";
 import { getRandomQuestions } from "../utils/shuffleList";
 
 class QuestionController {
+  // Get all questions form DB
   getAllQuestions = async (
     request: Request,
     response: Response,
@@ -10,6 +11,8 @@ class QuestionController {
   ) => {
     try {
       const allQuestions = await db.Question.findAll({ include: "answers" });
+
+      // Return five random questions
       const fiveRandomQuestions = getRandomQuestions(allQuestions);
       response.status(200).json({
         data: fiveRandomQuestions,
